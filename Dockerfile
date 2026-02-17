@@ -5,7 +5,7 @@
 ARG DOCKER_REGISTRY=
 ARG NPM_REGISTRY=
 
-FROM ${DOCKER_REGISTRY:-}node:20-alpine AS frontend-builder
+FROM node:20-alpine AS frontend-builder
 
 # 重新声明 ARG（FROM 之后 ARG 作用域失效，需要重新声明）
 ARG NPM_REGISTRY=
@@ -36,7 +36,7 @@ ARG DOCKER_REGISTRY=
 ARG GO_PROXY=
 ARG ALPINE_MIRROR=
 
-FROM ${DOCKER_REGISTRY:-}golang:1.23-alpine AS backend-builder
+FROM golang:1.23-alpine AS backend-builder
 
 # 重新声明 ARG（FROM 之后 ARG 作用域失效，需要重新声明）
 ARG GO_PROXY=
