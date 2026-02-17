@@ -95,11 +95,21 @@ ARG ALPINE_MIRROR=
 #    sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
 #    fi
 # 安装运行时依赖
-RUN apk add --no-cache \
-    ca-certificates \
-    tzdata \
-    ffmpeg \
-    wget \
+RUN echo "https://mirrors.aliyun.com/alpine/v3.19/main/" > /etc/apk/repositories && \
+    echo "https://mirrors.aliyun.com/alpine/v3.19/community/" >> /etc/apk/repositories && \
+    # 2. 先更新索引，再安装包（补全ffmpeg所有依赖）
+    apk update && \
+    apk add --no-cache \
+        ca-certificates \
+        tzdata \
+        # 改用 ffmpeg-full（完整版本）+ 补全依赖
+        ffmpeg-full \
+        # ffmpeg 核心依赖（缺一不可）
+        libavcodec \
+        libavformat \
+        libavutil \
+        libswscale \
+        wget \
     && rm -rf /var/cache/apk/*
 
 # 设置时区
