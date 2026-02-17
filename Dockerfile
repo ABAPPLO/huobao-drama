@@ -83,7 +83,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 ARG DOCKER_REGISTRY=
 ARG ALPINE_MIRROR=
 
-FROM ${DOCKER_REGISTRY:-}alpine:latest
+FROM alpine:latest
 
 # 重新声明 ARG（FROM 之后 ARG 作用域失效，需要重新声明）
 ARG ALPINE_MIRROR=
