@@ -11,8 +11,8 @@ FROM node:20-alpine AS frontend-builder
 ARG NPM_REGISTRY=
 
 # 配置 npm 镜像源（条件执行）
-ENV NPM_REGISTRY=${NPM_REGISTRY:-}
-RUN if [ -n "$NPM_REGISTRY" ]; then \
+# ENV NPM_REGISTRY=${NPM_REGISTRY:-}
+# RUN if [ -n "$NPM_REGISTRY" ]; then \
     npm config set registry "$NPM_REGISTRY" || true; \
     fi
 
@@ -43,13 +43,13 @@ ARG GO_PROXY=
 ARG ALPINE_MIRROR=
 
 # 配置 Alpine 镜像源（条件执行）
-ENV ALPINE_MIRROR=${ALPINE_MIRROR:-}
-RUN if [ -n "$ALPINE_MIRROR" ]; then \
-    sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
-    fi
+# ENV ALPINE_MIRROR=${ALPINE_MIRROR:-}
+# RUN if [ -n "$ALPINE_MIRROR" ]; then \
+#     sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
+#     fi
 
 # 配置 Go 代理（使用 ENV 持久化到运行时）
-ENV GOPROXY=${GO_PROXY:-https://goproxy.cn,direct}
+# ENV GOPROXY=${GO_PROXY:-https://goproxy.cn,direct}
 ENV GO111MODULE=on
 
 # 安装必要的构建工具（纯 Go 编译，无需 CGO）
@@ -91,9 +91,9 @@ ARG ALPINE_MIRROR=
 # 配置 Alpine 镜像源（条件执行）
 # ENV ALPINE_MIRROR=${ALPINE_MIRROR:-}
 
-RUN if [ -n "$ALPINE_MIRROR" ]; then \
-    sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
-    fi
+# RUN if [ -n "$ALPINE_MIRROR" ]; then \
+#    sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
+#    fi
 # 安装运行时依赖
 RUN apk add --no-cache \
     ca-certificates \
