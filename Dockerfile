@@ -90,10 +90,13 @@ ARG ALPINE_MIRROR=
 
 # 配置 Alpine 镜像源（条件执行）
 ENV ALPINE_MIRROR=${ALPINE_MIRROR:-}
+
 RUN if [ -n "$ALPINE_MIRROR" ]; then \
     sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
     fi
-
+RUN set -eux; \
+    # 修复 DNS 解析（阿里云公共 DNS，国内稳定）
+    echo "nameserver 223.5.5.5" > /etc/resolv.conf;
 # 安装运行时依赖
 RUN apk add --no-cache \
     ca-certificates \
