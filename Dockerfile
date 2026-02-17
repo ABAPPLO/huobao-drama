@@ -13,8 +13,8 @@ ARG NPM_REGISTRY=
 # 配置 npm 镜像源（条件执行）
 # ENV NPM_REGISTRY=${NPM_REGISTRY:-}
 # RUN if [ -n "$NPM_REGISTRY" ]; then \
-    npm config set registry "$NPM_REGISTRY" || true; \
-    fi
+#    npm config set registry "$NPM_REGISTRY" || true; \
+#    fi
 
 WORKDIR /app/web
 
