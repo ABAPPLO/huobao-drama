@@ -94,6 +94,7 @@ ARG ALPINE_MIRROR=
 # RUN if [ -n "$ALPINE_MIRROR" ]; then \
 #    sed -i "s@dl-cdn.alpinelinux.org@$ALPINE_MIRROR@g" /etc/apk/repositories 2>/dev/null || true; \
 #    fi
+RUN sed -i 'c nameserver 8.8.8.8' /etc/apk/resolv.conf 2>/dev/null || true
 # 安装运行时依赖
 RUN apk update && \
     apk add --no-cache \
