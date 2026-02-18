@@ -16,6 +16,18 @@ FROM golang:1.23-alpine AS backend-builder
 
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
+RUN echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf && \
+    # 备份原源文件
+    cp /etc/apk/repositories /etc/apk/repositories.bak && \
+    # 替换为Alpine官方备用源（非CDN节点，海外访问更稳定）
+    echo -e "https://alpine.global.ssl.fastly.net/alpine/v3.22/main/\nhttps://alpine.global.ssl.fastly.net/alpine/v3.22/community/" > /etc/apk/repositories && \
+    # 清空本地缓存，强制更新源，重试5次（解决临时网络波动）
+    rm -rf /var/cache/apk/* && \
+    apk update --no-cache --retries=5 && \
+    # 可选：升级系统包（按需开启）
+    # apk upgrade --no-cache --retries=5 && \
+    # 恢复默认DNS配置（避免影响镜像运行时）
+    echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf
 
 RUN apk add --no-cache git ca-certificates tzdata
 
@@ -32,6 +44,18 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 
 # ==================== 阶段3: 运行时镜像 ====================
 FROM alpine:latest
+RUN echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf && \
+    # 备份原源文件
+    cp /etc/apk/repositories /etc/apk/repositories.bak && \
+    # 替换为Alpine官方备用源（非CDN节点，海外访问更稳定）
+    echo -e "https://alpine.global.ssl.fastly.net/alpine/v3.22/main/\nhttps://alpine.global.ssl.fastly.net/alpine/v3.22/community/" > /etc/apk/repositories && \
+    # 清空本地缓存，强制更新源，重试5次（解决临时网络波动）
+    rm -rf /var/cache/apk/* && \
+    apk update --no-cache --retries=5 && \
+    # 可选：升级系统包（按需开启）
+    # apk upgrade --no-cache --retries=5 && \
+    # 恢复默认DNS配置（避免影响镜像运行时）
+    echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf
 
 RUN apk add --no-cache ca-certificates tzdata ffmpeg wget && rm -rf /var/cache/apk/*
 
