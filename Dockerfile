@@ -16,19 +16,20 @@ FROM golang:1.23-alpine AS backend-builder
 
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
-RUN echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf && \
-    # 备份原源文件
-    cp /etc/apk/repositories /etc/apk/repositories.bak && \
-    # 替换为Alpine官方备用源（非CDN节点，海外访问更稳定）
-    echo -e "https://alpine.global.ssl.fastly.net/alpine/v3.22/main/\nhttps://alpine.global.ssl.fastly.net/alpine/v3.22/community/" > /etc/apk/repositories && \
-    # 清空本地缓存，强制更新源，重试5次（解决临时网络波动）
-    rm -rf /var/cache/apk/* && \
-    apk update --no-cache --retries=5 && \
-    # 可选：升级系统包（按需开启）
-    # apk upgrade --no-cache --retries=5 && \
-    # 恢复默认DNS配置（避免影响镜像运行时）
-    echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf
-
+RUN set -eux; \
+    # 改用美国官方源（更稳定）
+    printf 'nameserver 8.8.8.8\nnameserver 1.1.1.1\n' > /etc/resolv.conf; \
+    cp /etc/apk/repositories /etc/apk/repositories.bak; \
+    # 替换为美国Nexcess节点（海外访问最稳定的官方源之一）
+    echo "https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/main/" > /etc/apk/repositories; \
+    echo "https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/community/" >> /etc/apk/repositories; \
+    # 调试：打印源文件内容，确认替换成功
+    cat /etc/apk/repositories; \
+    # 调试：测试源连通性
+    curl -v --max-time 20 https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/main/ || echo "源访问失败，跳过测试"; \
+    # 清空缓存+更新源（重试10次）
+    rm -rf /var/cache/apk/*; \
+    apk update --no-cache --retries=10;
 RUN apk add --no-cache git ca-certificates tzdata
 
 WORKDIR /app
@@ -44,19 +45,21 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 
 # ==================== 阶段3: 运行时镜像 ====================
 FROM alpine:latest
-RUN echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf && \
-    # 备份原源文件
-    cp /etc/apk/repositories /etc/apk/repositories.bak && \
-    # 替换为Alpine官方备用源（非CDN节点，海外访问更稳定）
-    echo -e "https://alpine.global.ssl.fastly.net/alpine/v3.22/main/\nhttps://alpine.global.ssl.fastly.net/alpine/v3.22/community/" > /etc/apk/repositories && \
-    # 清空本地缓存，强制更新源，重试5次（解决临时网络波动）
-    rm -rf /var/cache/apk/* && \
-    apk update --no-cache --retries=5 && \
-    # 可选：升级系统包（按需开启）
-    # apk upgrade --no-cache --retries=5 && \
-    # 恢复默认DNS配置（避免影响镜像运行时）
-    echo "nameserver 8.8.8.8\nnameserver 1.1.1.1" > /etc/resolv.conf
-
+RUN set -eux; \
+    # 改用美国官方源（更稳定）
+    printf 'nameserver 8.8.8.8\nnameserver 1.1.1.1\n' > /etc/resolv.conf; \
+    cp /etc/apk/repositories /etc/apk/repositories.bak; \
+    # 替换为美国Nexcess节点（海外访问最稳定的官方源之一）
+    echo "https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/main/" > /etc/apk/repositories; \
+    echo "https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/community/" >> /etc/apk/repositories; \
+    # 调试：打印源文件内容，确认替换成功
+    cat /etc/apk/repositories; \
+    # 调试：测试源连通性
+    curl -v --max-time 20 https://mirror.us-midwest-1.nexcess.net/alpine/v3.22/main/ || echo "源访问失败，跳过测试"; \
+    # 清空缓存+更新源（重试10次）
+    rm -rf /var/cache/apk/*; \
+    apk update --no-cache --retries=10;
+    
 RUN apk add --no-cache ca-certificates tzdata ffmpeg wget && rm -rf /var/cache/apk/*
 
 ENV TZ=Asia/Shanghai
