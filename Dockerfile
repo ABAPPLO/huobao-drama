@@ -31,7 +31,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o huobao-drama .
 RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 
 # ==================== 阶段3: 运行时镜像 ====================
-FROM ubuntu:20.04
+FROM alpine:3.23.3
 
 RUN apk add --no-cache ca-certificates tzdata ffmpeg wget && rm -rf /var/cache/apk/*
 
