@@ -16,17 +16,7 @@ FROM golang:1.23-alpine AS backend-builder
 
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
-# 完全不修改任何系统文件，直接指定源执行apk命令
-RUN set -eux; \
-    # 直接通过--repository参数指定海外源，无需修改文件
-    apk update --no-cache \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/community/; \
-    # 安装工具时同样指定源
-    apk add --no-cache \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/community/ \
-      curl wget bash;
+
       
 RUN apk add --no-cache git ca-certificates tzdata
 
@@ -43,18 +33,6 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 
 # ==================== 阶段3: 运行时镜像 ====================
 FROM alpine:latest
-USER root
-# 完全不修改任何系统文件，直接指定源执行apk命令
-RUN set -eux; \
-    # 直接通过--repository参数指定海外源，无需修改文件
-    apk update --no-cache  \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/community/; \
-    # 安装工具时同样指定源
-    apk add --no-cache \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://dl.alpinelinux.org/alpine/v3.22/community/ \
-      curl wget bash;
     
 RUN apk add --no-cache ca-certificates tzdata ffmpeg wget && rm -rf /var/cache/apk/*
 
@@ -70,9 +48,9 @@ RUN cp ./configs/config.example.yaml ./configs/config.yaml
 COPY migrations ./migrations/
 RUN mkdir -p /app/data/storage
 
-EXPOSE 5678
+EXPOSE 5690
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:5678/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5690/health || exit 1
 
 CMD ["./huobao-drama"]
