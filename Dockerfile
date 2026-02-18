@@ -20,12 +20,12 @@ ENV GO111MODULE=on
 RUN set -eux; \
     # 直接通过--repository参数指定海外源，无需修改文件
     apk update --no-cache \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/community/; \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/community/; \
     # 安装工具时同样指定源
     apk add --no-cache \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/community/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/community/ \
       curl wget bash;
       
 RUN apk add --no-cache git ca-certificates tzdata
@@ -48,12 +48,12 @@ USER root
 RUN set -eux; \
     # 直接通过--repository参数指定海外源，无需修改文件
     apk update --no-cache  \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/community/; \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/community/; \
     # 安装工具时同样指定源
     apk add --no-cache \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
-      --repository https://nl.alpinelinux.org/alpine/v3.22/community/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/main/ \
+      --repository https://dl.alpinelinux.org/alpine/v3.22/community/ \
       curl wget bash;
     
 RUN apk add --no-cache ca-certificates tzdata ffmpeg wget && rm -rf /var/cache/apk/*
