@@ -10,7 +10,7 @@ RUN npm install
 
 COPY web/ ./
 RUN npm run build
-
+USER root
 # ==================== 阶段2: 构建后端 ====================
 FROM golang:1.23-alpine AS backend-builder
 
@@ -45,6 +45,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o migrate cmd/migrate/main.go
 
 # ==================== 阶段3: 运行时镜像 ====================
 FROM alpine:latest
+USER root
 RUN set -eux; \
     # 改用美国官方源（更稳定）
     printf 'nameserver 8.8.8.8\nnameserver 1.1.1.1\n' > /etc/resolv.conf; \
