@@ -19,11 +19,11 @@ ENV GO111MODULE=on
 # 完全不修改任何系统文件，直接指定源执行apk命令
 RUN set -eux; \
     # 直接通过--repository参数指定海外源，无需修改文件
-    apk update --no-cache --retries=20 \
+    apk update --no-cache \
       --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
       --repository https://nl.alpinelinux.org/alpine/v3.22/community/; \
     # 安装工具时同样指定源
-    apk add --no-cache --retries=20 \
+    apk add --no-cache \
       --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
       --repository https://nl.alpinelinux.org/alpine/v3.22/community/ \
       curl wget bash;
@@ -47,11 +47,11 @@ USER root
 # 完全不修改任何系统文件，直接指定源执行apk命令
 RUN set -eux; \
     # 直接通过--repository参数指定海外源，无需修改文件
-    apk update --no-cache --retries=20 \
+    apk update --no-cache  \
       --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
       --repository https://nl.alpinelinux.org/alpine/v3.22/community/; \
     # 安装工具时同样指定源
-    apk add --no-cache --retries=20 \
+    apk add --no-cache \
       --repository https://nl.alpinelinux.org/alpine/v3.22/main/ \
       --repository https://nl.alpinelinux.org/alpine/v3.22/community/ \
       curl wget bash;
