@@ -17,7 +17,7 @@ FROM golang:tip-alpine3.22 AS backend-builder
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
 
-RUN apk add --no-cache git ca-certificates tzdata
+RUN apk add --no-cache git ca-certificates tzdata openssh-client
 
 WORKDIR /app
 
