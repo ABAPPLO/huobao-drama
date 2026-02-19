@@ -12,7 +12,7 @@ COPY web/ ./
 RUN npm run build
 
 # ==================== 阶段2: 构建后端 ====================
-FROM golang:tip-alpine3.22 AS backend-builder
+FROM golang AS backend-builder
 
 # ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
@@ -22,7 +22,7 @@ RUN apk add --no-cache git ca-certificates tzdata
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN go mod download -x
 
 COPY . .
 COPY --from=frontend-builder /app/web/dist ./web/dist
