@@ -20,7 +20,6 @@ ENV GO111MODULE=on
 RUN apk add --no-cache git ca-certificates tzdata openssh-client
 
 WORKDIR /app
-RUN git config --global url."http://github.com/".insteadOf "https://github.com/"
 
 COPY go.mod go.sum ./
 RUN go mod download -x
