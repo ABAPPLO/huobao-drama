@@ -12,7 +12,7 @@ COPY web/ ./
 RUN npm run build
 
 # ==================== 阶段2: 构建后端 ====================
-FROM golang AS backend-builder
+FROM golang:tip-alpine3.22 AS backend-builder
 
 ENV GOPROXY=https://proxy.golang.org,direct
 ENV GO111MODULE=on
