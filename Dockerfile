@@ -14,7 +14,7 @@ RUN npm run build
 # ==================== 阶段2: 构建后端 ====================
 FROM golang:tip-alpine3.22 AS backend-builder
 
-ENV GOPROXY=https://proxy.golang.org,direct
+ENV GOPROXY=direct
 ENV GO111MODULE=on
 
 RUN apk add --no-cache git ca-certificates tzdata openssh-client
@@ -47,9 +47,9 @@ RUN cp ./configs/config.example.yaml ./configs/config.yaml
 COPY migrations ./migrations/
 RUN mkdir -p /app/data/storage
 
-EXPOSE 5678
+EXPOSE 5680
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:5678/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5680/health || exit 1
 
 CMD ["./huobao-drama"]
