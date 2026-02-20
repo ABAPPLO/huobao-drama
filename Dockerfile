@@ -16,7 +16,6 @@ FROM golang:tip-alpine3.22 AS backend-builder
 
 ENV GOPROXY=direct
 ENV GO111MODULE=on
-RUN git config --global http.sslVerify false
 RUN apk add --no-cache git ca-certificates tzdata openssh-client
 
 WORKDIR /app
@@ -46,7 +45,6 @@ COPY configs/config.example.yaml ./configs/
 RUN cp ./configs/config.example.yaml ./configs/config.yaml
 COPY migrations ./migrations/
 RUN mkdir -p /app/data/storage
-RUN git config --global --unset http.sslVerify
 EXPOSE 5680
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
